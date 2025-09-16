@@ -58,7 +58,7 @@ When creating a blog post, the API accepts JSON like this:
     "category": "General"
   }
 }
-
+```
 ## 🐳 Running with Docker Compose
 
 > ⚠️ **Note:** This project is still in development phase.
@@ -68,7 +68,7 @@ When creating a blog post, the API accepts JSON like this:
 ```bash
 git clone https://github.com/SLANGERES/blogging-app.git
 cd blogging-app
-
+```
 ## 📌 Development Status
 ```
  Project setup with Docker Compose
@@ -82,3 +82,4 @@ cd blogging-app
  RabbitMQ integration
 
  Elasticsearch read server
+```
