@@ -6,7 +6,6 @@ type NewBlogRepository interface {
 
 	GetAllBlog() ([]models.Blog, error)
 	
-
 	GetBlogByID() (models.Blog, error)
 
 	GetBlogByTag() ([]models.Blog, error)

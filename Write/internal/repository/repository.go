@@ -5,11 +5,14 @@ import (
 	"context"
 	"github/SLANGERES/CQRS/Write/database"
 	"github/SLANGERES/CQRS/Write/internal/models"
+
+	_ "github.com/lib/pq"
 )
 
 // concrete implementation
 type blogRepo struct {
-	db database.Database // <- depend on abstraction, not concrete pgx
+	db database.Database
+	// <- depend on abstraction, not concrete pgx
 }
 
 // constructor

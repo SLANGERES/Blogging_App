@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github/SLANGERES/CQRS/Write/internal/broker"
 	"github/SLANGERES/CQRS/Write/internal/models"
 
 	"github/SLANGERES/CQRS/Write/internal/repository"
@@ -11,11 +12,15 @@ import (
 )
 
 type BlogHandler struct {
-	repo repository.BlogRepository
+	repo   repository.BlogRepository
+	mqconn *broker.MqBroker
 }
 
-func NewBlogHandler(repo repository.BlogRepository) *BlogHandler {
-	return &BlogHandler{repo: repo}
+func NewBlogHandler(repo repository.BlogRepository, mqconn *broker.MqBroker) *BlogHandler {
+	return &BlogHandler{
+		repo:   repo,
+		mqconn: mqconn,
+	}
 }
 
 func (h *BlogHandler) AddBlog(c *gin.Context) {
@@ -37,6 +42,13 @@ func (h *BlogHandler) AddBlog(c *gin.Context) {
 	if _, err := h.repo.CreateBlog(c.Request.Context(), blog); err != nil {
 		util.ErrorResponse(c, http.StatusInternalServerError, "Failed to save blog")
 		return
+	}
+
+	//Sendig to the mq
+	newBlog := util.ConvertReqbodyMqBody(blog)
+
+	if err := h.mqconn.Publish(newBlog); err != nil {
+		util.ErrorResponse(c, http.StatusInternalServerError, "unable to sync maybe mq is broken")
 	}
 
 	util.OkResponse(c, "Blog added successfully")

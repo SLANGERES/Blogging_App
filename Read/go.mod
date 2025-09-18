@@ -6,6 +6,7 @@ require (
 	github.com/elastic/go-elasticsearch/v9 v9.1.0
 	github.com/gin-gonic/gin v1.10.1
 	github.com/joho/godotenv v1.5.1
+	github.com/rabbitmq/amqp091-go v1.10.0
 )
 
 require (
