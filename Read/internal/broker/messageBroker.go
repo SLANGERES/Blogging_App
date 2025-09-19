@@ -65,6 +65,7 @@ func (c *Consumer) Consume(queueName string, handler func(models.Blog) error) er
 	}
 
 	go func() {
+		slog.Info("Rabbit mq is start consuming")
 		for d := range msgs {
 			var blog models.Blog
 			if err := json.Unmarshal(d.Body, &blog); err != nil {
@@ -79,13 +80,17 @@ func (c *Consumer) Consume(queueName string, handler func(models.Blog) error) er
 				_ = d.Nack(false, true) // requeue for retry
 				continue
 			}
+			slog.Info("blog recived", "blog id", blog.ID)
 			if err := c.db.InsertInDb(blog); err != nil {
 				slog.Error("unable to process the queue in your db", "error", err)
 			}
+
 			// ✅ Ack after success
 			if err := d.Ack(false); err != nil {
 				slog.Error("Failed to ack message", "error", err)
 			}
+			slog.Info("blog sync sucessfully")
+
 		}
 	}()
 

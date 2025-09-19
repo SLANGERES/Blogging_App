@@ -6,15 +6,15 @@ type NewBlogRepository interface {
 
 	GetAllBlog() ([]models.Blog, error)
 	
-	GetBlogByID() (models.Blog, error)
+	GetBlogByID(string) (models.Blog, error)
 
-	GetBlogByTag() ([]models.Blog, error)
+	GetBlogByTag(string) ([]models.Blog, error)
 
 	GetAllCategory() ([]string, error)
 
-	GetBlogByCategory() ([]models.Blog, error)
+	GetBlogByCategory(string) ([]models.Blog, error)
 
-	GetFullSearch() ([]models.Blog, error)
+	GetFullSearch(string) ([]models.Blog, error)
 
-	GetTopBlog() ([]models.Blog, error)
+	GetTopBlog(int) ([]models.Blog, error)
 }

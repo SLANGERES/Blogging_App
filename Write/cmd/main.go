@@ -49,7 +49,7 @@ func main() {
 
 	// Pass handler into router
 	r := router.New(blogHandler)
-	slog.Info("Server connected sucessfully")
+	slog.Info("Server connected sucessfully 8000")
 
 	// Start server
 	http.ListenAndServe(":8000", r)

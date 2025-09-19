@@ -3,6 +3,7 @@ package handler
 import (
 	"github/SLANGERES/CQRS/Write/internal/broker"
 	"github/SLANGERES/CQRS/Write/internal/models"
+	"log/slog"
 
 	"github/SLANGERES/CQRS/Write/internal/repository"
 	"github/SLANGERES/CQRS/Write/internal/util"
@@ -50,6 +51,7 @@ func (h *BlogHandler) AddBlog(c *gin.Context) {
 	if err := h.mqconn.Publish(newBlog); err != nil {
 		util.ErrorResponse(c, http.StatusInternalServerError, "unable to sync maybe mq is broken")
 	}
+	slog.Info("Blog is sucess fully send to the rabbit mq ", "blog id", blog.ID)
 
 	util.OkResponse(c, "Blog added successfully")
 }

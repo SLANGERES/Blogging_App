@@ -7,6 +7,7 @@ import (
 	"github/SLANGERES/CQRS/Read/database"
 	"github/SLANGERES/CQRS/Read/internal/models"
 	"github/SLANGERES/CQRS/Read/internal/utils"
+	"log/slog"
 	"strings"
 )
 
@@ -34,10 +35,25 @@ func (h *BlogRepo) GetAllBlog() ([]models.Blog, error) {
 	return utils.DecodeBlogsResponse(res)
 }
 func (h *BlogRepo) GetBlogByID(id string) ([]models.Blog, error) {
-	return nil, nil
+	query := fmt.Sprintf(`{
+		"query": {
+			"term": {
+				"id": "%s"
+			}
+		}
+	}`, id)
+
+	res, err := h.db.DB.Search(
+		h.db.DB.Search.WithIndex("blogs"),
+		h.db.DB.Search.WithBody(strings.NewReader(query)),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return utils.DecodeBlogsResponse(res)
 }
 
-func (h *BlogRepo) GetBlogByTag(tags []string) ([]models.Blog, error) {
+func (h *BlogRepo) GetBlogByTag(tags string) ([]models.Blog, error) {
 	query := fmt.Sprintf(`{"query":{"term":{"tags":"%s"}}}`, tags)
 
 	res, err := h.db.DB.Search(
@@ -52,6 +68,7 @@ func (h *BlogRepo) GetBlogByTag(tags []string) ([]models.Blog, error) {
 
 func (h *BlogRepo) GetAllCategory() ([]string, error) {
 	// Ask Elasticsearch for unique values of "tags"
+	slog.Info("finding the category .....")
 	query := `{
 		"size": 0,
 		"aggs": {
@@ -92,6 +109,7 @@ func (h *BlogRepo) GetAllCategory() ([]string, error) {
 	for _, b := range result.Aggregations.UniqueCategories.Buckets {
 		categories = append(categories, b.Key)
 	}
+	slog.Info("Category Found", "info", categories)
 
 	return categories, nil
 }
